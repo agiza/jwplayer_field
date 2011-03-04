@@ -7,7 +7,7 @@
  */
 function jwplayer_field_install() {
   drupal_load('module', 'content');
-  content_notify('install', 'example');
+  content_notify('install', 'jwplayer_field');
 }
 
 /**
@@ -15,7 +15,7 @@ function jwplayer_field_install() {
  */
 function jwplayer_field_uninstall() {
   drupal_load('module', 'content');
-  content_notify('uninstall', 'example');
+  content_notify('uninstall', 'jwplayer_field');
 }
 
 /**
@@ -25,7 +25,7 @@ function jwplayer_field_uninstall() {
  */
 function jwplayer_field_enable() {
   drupal_load('module', 'content');
-  content_notify('enable', 'example');
+  content_notify('enable', 'jwplayer_field');
 }
 
 /**
@@ -35,5 +35,5 @@ function jwplayer_field_enable() {
  */
 function jwplayer_field_disable() {
   drupal_load('module', 'content');
-  content_notify('disable', 'example');
+  content_notify('disable', 'jwplayer_field');
 }

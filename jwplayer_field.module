@@ -74,15 +74,7 @@ function jwplayer_field_clean_id() {
 }
 
 /**
- * Theme function for 'default' example field formatter.
- *
- * $element['#item']: the sanitized $delta value for the item,
- * $element['#field_name']: the field name,
- * $element['#type_name']: the $node->type,
- * $element['#formatter']: the $formatter_name,
- * $element['#node']: the $node,
- * $element['#delta']: the delta of this item, like '0',
- *
+ * Theme function for 'default' JW Player field formatter.
  */
 function theme_jwplayer_field_formatter_default($element) {
   if (isset($element['#item']['filepath']) && !empty($element['#item']['filepath'])) {
