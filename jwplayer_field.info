@@ -1,0 +1,7 @@
+; $Id$
+name = JW Player Field
+description = Provides a field formatter for the JW Player.
+dependencies[] = content
+dependencies[] = filefield
+package = CCK
+core = 6.x

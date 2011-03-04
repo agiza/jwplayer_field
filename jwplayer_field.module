@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * @file
+ * Provides a field formatter for the JW Player.
+ */
+
+define('JWPLAYER_FIELD_JWPLAYER_JS_PATH', 'sites/all/libraries/mediaplayer/jwplayer.js');
+define('JWPLAYER_FIELD_JWPLAYER_FLASHPLAYER_PATH', 'sites/all/libraries/mediaplayer/player.swf');
+
+define('JWPLAYER_FIELD_DEFAULT_WIDTH', '640');
+define('JWPLAYER_FIELD_DEFAULT_HEIGHT', '480');
+
+define('JWPLAYER_FIELD_DEFAULT_AUDIO_WIDTH', '640');
+define('JWPLAYER_FIELD_DEFAULT_AUDIO_HEIGHT', '24');
+
+/**
+ * Implementation of hook_theme().
+ */
+function jwplayer_field_theme() {
+  return array(
+    'jwplayer_field_formatter_default' => array(
+      'arguments' => array('element' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function jwplayer_field_field_formatter_info() {
+  return array(
+    'default' => array(
+      'label' => t('JW Player'),
+      'field types' => array('filefield'),
+      'multiple values' => CONTENT_HANDLE_CORE,
+    ),
+  );
+}
+
+/**
+ * Load JavaScript for JW Player.
+ */
+function jwplayer_field_load() {
+  static $loaded = FALSE;
+
+  if (!$loaded) {
+    $path = drupal_get_path('module', 'jwplayer_field');
+    drupal_add_js(JWPLAYER_FIELD_JWPLAYER_JS_PATH);
+    drupal_add_js($path . '/jwplayer_field.js');
+    $data = array(
+      'jwplayerField' => array(
+        'config' => array(
+          'flashplayer' => base_path() . JWPLAYER_FIELD_JWPLAYER_FLASHPLAYER_PATH,
+          'width' => JWPLAYER_FIELD_DEFAULT_WIDTH,
+          'height' => JWPLAYER_FIELD_DEFAULT_HEIGHT,
+        ),
+      ),
+    );
+    drupal_add_js($data, 'setting');
+    $loaded = TRUE;
+  }
+}
+
+/**
+ * Generate a unique ID for a JW Player field.
+ */
+function jwplayer_field_clean_id() {
+  static $instance = 0;
+
+  $id = 'jwplayer-field-' . $instance;
+  $instance++;
+  return $id;
+}
+
+/**
+ * Theme function for 'default' example field formatter.
+ *
+ * $element['#item']: the sanitized $delta value for the item,
+ * $element['#field_name']: the field name,
+ * $element['#type_name']: the $node->type,
+ * $element['#formatter']: the $formatter_name,
+ * $element['#node']: the $node,
+ * $element['#delta']: the delta of this item, like '0',
+ *
+ */
+function theme_jwplayer_field_formatter_default($element) {
+  if (isset($element['#item']['filepath']) && !empty($element['#item']['filepath'])) {
+    jwplayer_field_load();
+    $id = jwplayer_field_clean_id();
+    $output = '<div id="' . $id . '">' . t('Loading') . ' ...</div>';
+    $data = array(
+      'jwplayerField' => array(
+        'fields' => array(
+          $id => array(
+            'file' => base_path() . $element['#item']['filepath'],
+            'width' => ($element['#item']['filemime'] === 'audio/mpeg') ? JWPLAYER_FIELD_DEFAULT_AUDIO_WIDTH : JWPLAYER_FIELD_DEFAULT_WIDTH,
+            'height' => ($element['#item']['filemime'] === 'audio/mpeg') ? JWPLAYER_FIELD_DEFAULT_AUDIO_HEIGHT : JWPLAYER_FIELD_DEFAULT_HEIGHT,
+          ),
+        ),
+      ),
+    );
+    drupal_add_js($data, 'setting');
+    return $output;
+  }
+  return '';
+}
